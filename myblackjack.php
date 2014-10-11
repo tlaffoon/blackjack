@@ -1,46 +1,102 @@
 <?php 
 
-// create an array for suits
-$suits = ['Clubs', 'Hearts', 'Spades', 'Diamonds'];
+/* ----------------------------- */
+// Define Functions
 
-// create an array for cards
-$cards = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
+// This function will build the deck.
+function buildDeck() {
+    
+    // Create an array for suits
+    $suits = ['Clubs', 'Hearts', 'Spades', 'Diamonds'];
 
-// build a deck (array) of cards
-// card values should be "VALUE SUIT". ex: "7 H"
-// make sure to shuffle the deck before returning it
-function buildDeck($suits, $cards) {
+    // Create an array for cards
+    $cards = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
+
     foreach ($cards as $card) {
         foreach ($suits as $suit) {
             $deck[] = "$card of $suit";
         }
     }
 
+    // Shuffle the deck & return
     shuffle($deck);
-
     return $deck;
 }
 
+// This function will output a player's hand.
+function echoHand($hand, $hidden = false) {
+
+}
+
+// This function will calculate the value of a hand.
+function valueHand($hand) {
+
+    $value = 0;
+
+    foreach ($hand as $card) {
+
+        $cardArray = explode(' ', $card);
+
+        switch ($cardArray[0]) {
+            case 'Ace':
+                //
+                break;
+
+            case 'King':
+                $value += 10;
+                break;
+            
+            case 'Queen':
+                $value += 10;
+                break;
+
+            case 'Jack':
+                $value += 10;
+                break;
+
+            case 'King':
+                $value += 10;
+                break;
+
+            default:
+                $value += $card;
+                break;
+        }  // end switch
+    } // end foreach
+
+    return $value;
+}
+
+// function isAce($card) {
+//     if ($card) {
+//         # code...
+//     }
+// }
+
+/* ----------------------------- */
+// Initialize Variables
+$choice = null;
+
 // build the deck of cards
-$deck = buildDeck($suits, $cards);
-
-//echo "$count($deck)";
-
-//print_r($deck);
+$deck = buildDeck();
 
 // initialize a dealer and player hand
 $dealerHand = [];
 $playerHand = [];
 
-// dealer and player each draw two cards
+/* ----------------------------- */
+// Begin Main Logic
 
+// Deal the first two cards.
 for ($i=1; $i <=2 ; $i++) { 
     $playerHand[] = array_pop($deck);
     $dealerHand[] = array_pop($deck);
 }
 
-// echo the dealer hand, only showing the first card
+// Echo the dealer hand, only showing the first card
 echo "Dealer showing: {$dealerHand[0]}" . PHP_EOL;
+echo "Value: " . valueHand($dealerHand) . PHP_EOL;
+
 
 // Echo player hand
 echo "You have: " . PHP_EOL;
@@ -48,7 +104,9 @@ foreach ($playerHand as $playerCard) {
     echo "$playerCard" . PHP_EOL;
 }
 
-// allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
+echo "Value: " . valueHand($playerHand) . PHP_EOL;
+
+// Allow player to "(H)it or (S)tay?" till they bust (exceed 21) or stay
 while ($choice != 'S') {
 
     // if ($valuePlayerHand > 21) {
@@ -56,7 +114,17 @@ while ($choice != 'S') {
     //     exit(0);
     // }
 
-    echo "(H)it or (S)tay?" . PHP_EOL;
+    if (valueHand($playerHand) > 21) {
+        echo "Busted!" . PHP_EOL;
+        exit(0);
+    }
+
+    elseif (valueHand($playerHand) == 21) {
+        echo "BlackJack! You Won!" . PHP_EOL;
+        exit(0);
+    }
+
+    echo "(H)it or (S)tay? ";
     $choice = strtoupper(trim(fgets(STDIN)));
 
     switch ($choice) {
@@ -69,6 +137,8 @@ while ($choice != 'S') {
             foreach ($playerHand as $playerCard) {
                 echo "$playerCard" . PHP_EOL;
             }
+
+            echo "Value: " . valueHand($playerHand) . PHP_EOL;
 
             break;
         
@@ -83,29 +153,20 @@ while ($choice != 'S') {
 }
 
 // show the dealer's hand (all cards)
-echo "Dealer showing: " . PHP_EOL;
-foreach ($dealerHand as $dealerCard) {
-    echo "$dealerCard" . PHP_EOL;
-}
+while (true) {
 
-// at this point, if the player has more than 21, tell them they busted
-// otherwise, if they have 21, tell them they won (regardless of dealer hand)
+    if (valueHand($dealerHand) > 21) {
+        echo "Dealer Busted!" . PHP_EOL;
+        exit(0);
+    }
 
-if ($valuePlayerHand > 21) {
-    echo "Busted! You have $valuePlayerHand!" . PHP_EOL;
-    exit(0);
-}
+    elseif (valueHand($dealerHand) == 21) {
+        echo "BlackJack! Dealer Won!" . PHP_EOL;
+        exit(0);
+    }
 
-elseif ($valuePlayerHand == 21) {
-    echo "You Won!" . PHP_EOL;
-}
+    elseif (valueHand($dealerHand) < 17) {
 
-// if neither of the above are true, then the dealer needs to draw more cards
-// dealer draws until their hand has a value of at least 17
-// show the dealer hand each time they draw a card
-
-else {
-    while ($valueDealerHand < 17) {
         $dealerHand[] = array_pop($deck);
 
         echo "Dealer showing: " . PHP_EOL;
@@ -113,15 +174,26 @@ else {
             echo "$dealerCard" . PHP_EOL;
         }
 
-        sleep(1);
+        echo "Value: " . valueHand($dealerHand) . PHP_EOL;
     }
+
+    else {
+        echo "This shouldn't run." . PHP_EOL;
+    }
+
+    sleep(1);
 }
+
+// at this point, if the player has more than 21, tell them they busted
+// otherwise, if they have 21, tell them they won (regardless of dealer hand)
+
+// if neither of the above are true, then the dealer needs to draw more cards
+// dealer draws until their hand has a value of at least 17
+// show the dealer hand each time they draw a card
 
 // finally, we can check and see who won
 // by this point, if dealer has busted, then player automatically wins
 // if player and dealer tie, it is a "push"
 // if dealer has more than player, dealer wins, otherwise, player wins
 
-
-
- ?>
+?>
