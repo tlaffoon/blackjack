@@ -39,7 +39,15 @@ function valueHand($hand) {
 
         switch ($cardArray[0]) {
             case 'Ace':
-                //
+                // Refactor to ternary.
+                if (valueHand($playerHand) <= 10) {
+                    $value += 11;
+                }
+
+                else {
+                    $value += 1;
+                }
+
                 break;
 
             case 'King':
@@ -95,7 +103,7 @@ for ($i=1; $i <=2 ; $i++) {
 
 // Echo the dealer hand, only showing the first card
 echo "Dealer showing: {$dealerHand[0]}" . PHP_EOL;
-echo "Value: " . valueHand($dealerHand) . PHP_EOL;
+//echo "Value: " . valueHand($dealerHand) . PHP_EOL;
 
 
 // Echo player hand
@@ -180,7 +188,9 @@ while (true) {
     else {
         // Dealer stays; evaluate against value of player hand
         if (valueHand($dealerHand) >= valueHand($playerHand)) {
+            echo "Dealer has: " . valueHand($dealerHand) . " and you have: " . valueHand($playerHand) . ".";
             echo "Dealer Wins!" . PHP_EOL;
+
             exit(0);
         }
 
