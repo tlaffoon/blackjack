@@ -120,7 +120,7 @@ while ($choice != 'S') {
     }
 
     elseif (valueHand($playerHand) == 21) {
-        echo "BlackJack! You Won!" . PHP_EOL;
+        echo "BlackJack! You Win!" . PHP_EOL;
         exit(0);
     }
 
@@ -161,7 +161,7 @@ while (true) {
     }
 
     elseif (valueHand($dealerHand) == 21) {
-        echo "BlackJack! Dealer Won!" . PHP_EOL;
+        echo "BlackJack! Dealer Wins!" . PHP_EOL;
         exit(0);
     }
 
@@ -178,7 +178,16 @@ while (true) {
     }
 
     else {
-        echo "This shouldn't run." . PHP_EOL;
+        // Dealer stays; evaluate against value of player hand
+        if (valueHand($dealerHand) >= valueHand($playerHand)) {
+            echo "Dealer Wins!" . PHP_EOL;
+            exit(0);
+        }
+
+        else {
+            echo "You Win!" . PHP_EOL;
+            exit(0);
+        }
     }
 
     sleep(1);
