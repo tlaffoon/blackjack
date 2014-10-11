@@ -39,14 +39,18 @@ function valueHand($hand) {
 
         switch ($cardArray[0]) {
             case 'Ace':
+                
                 // Refactor to ternary.
-                if (valueHand($playerHand) <= 10) {
+                if (valueHand($hand) <= 10) {
                     $value += 11;
                 }
 
                 else {
                     $value += 1;
                 }
+
+                $aceValue = (valueHand($hand) <= 10) ? $aceValue += 11 : $aceValue += 1 ;
+                echo "$aceValue" . PHP_EOL;
 
                 break;
 
@@ -169,6 +173,7 @@ while (true) {
     }
 
     elseif (valueHand($dealerHand) == 21) {
+        echo "Dealer has: " . valueHand($dealerHand) . " and you have: " . valueHand($playerHand) . ". ";
         echo "BlackJack! Dealer Wins!" . PHP_EOL;
         exit(0);
     }
@@ -188,7 +193,7 @@ while (true) {
     else {
         // Dealer stays; evaluate against value of player hand
         if (valueHand($dealerHand) >= valueHand($playerHand)) {
-            echo "Dealer has: " . valueHand($dealerHand) . " and you have: " . valueHand($playerHand) . ".";
+            echo "Dealer has: " . valueHand($dealerHand) . " and you have: " . valueHand($playerHand) . ". ";
             echo "Dealer Wins!" . PHP_EOL;
 
             exit(0);
